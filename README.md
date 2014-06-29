@@ -10,6 +10,10 @@ Warning: This repo is currently in the proof-of-concept phase. YMMV.
 
 Documentation to come later. For now, please see the [demos](./demos) folder for the most up-to-date examples of what is possible.
 
+## Demos
+
+* **[CassowarySurface](http://matthewtoast.github.io/famous-cassowary/demos/cassowary-surface/):** A stunning demonstration in which you move a green square around the screen with your mouse! ([Code](https://github.com/matthewtoast/famous-cassowary/blob/master/demos/cassowary-surface/index.js))
+
 ## Development
 
 You'll need Node to install Bower. After you clone the repo:
