@@ -1,0 +1,28 @@
+{
+  "name": "famous-cassowary",
+  "version": "0.0.0",
+  "authors": [
+    "Matthew Trost <mrtrost@gmail.com>"
+  ],
+  "description": "Auto-layouts in Famo.us via the Cassowary constraint solver",
+  "keywords": [
+    "famo.us",
+    "famous",
+    "cassowary"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "famous": "~0.2.1",
+    "cassowary.js": "git://github.com/slightlyoff/cassowary.js",
+    "famous-polyfills": "git://github.com/Famous/polyfills.git#~0.1.1",
+    "requirejs": "~2.1.14"
+  }
+}

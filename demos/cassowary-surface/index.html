@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>famous-cassowary: Auto-layouts in Famo.us via the Cassowary constraint solver</title>
+  <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="stylesheet" type="text/css" href="./../../bower_components/famous/core/famous.css" />
+  <script type="text/javascript" src="./../../bower_components/famous-polyfills/functionPrototypeBind.js"></script>
+  <script type="text/javascript" src="./../../bower_components/famous-polyfills/classList.js"></script>
+  <script type="text/javascript" src="./../../bower_components/famous-polyfills/requestAnimationFrame.js"></script>
+  <script>
+    var require = {
+      shim: {},
+      paths: {
+        famous:    './../../bower_components/famous',
+        requirejs: './../../bower_components/requirejs/require',
+        cassowary: './../../bower_components/cassowary.js/bin/c',
+        'famous-cassowary': './../../src'
+      }
+    };
+  </script>
+  <script type="text/javascript" src="./../../bower_components/requirejs/require.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
+</head>
+<body>
+  <!-- A minimal example of the CassowarySurface object -->
+</body>
+</html>
