@@ -47,13 +47,14 @@ require([
     size: [200, 200],
     content:
       '<p>The cassowaries are flightless birds in the genus Casuarius.</p>' +
-      '<p>[ Click & drag me ]</p>',
+      '<p>[ Click & drag me ]</p>' +
+      '<p><a href="https://github.com/matthewtoast/famous-cassowary/">Source code on GitHub &#8608;</a></p>',
     properties: {
       backgroundColor: '#339933',
       color: '#ddddff',
       fontFamily: 'Helvetica, Arial, sans-serif',
       textAlign: 'center',
-      padding: '20px'
+      padding: '10px 20px'
     },
     variables: {
       width: 200,
