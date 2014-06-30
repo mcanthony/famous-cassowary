@@ -35,12 +35,52 @@ require([
 
   var context = FamousEngine.createContext();
 
+  // Important note!:
+  //
+  // Famo.us provides a 'Draggable' modifier that you can use to
+  // add draggability to Surfaces. You wouldn't want to implement
+  // a dragging system using anything like the code below. The
+  // following is provided purely to illustrate how to build a
+  // CassowarySurface with this library and the dragging interface
+  // is only meant as a proof of concept.
+
   var mousePosition = [100, 100];
+  var mousePositionOffset = [100, 100];
   var mouseSync = new FamousMouseSync();
   FamousEngine.pipe(mouseSync);
+  var dragStartedInsideSurface = false;
+  mouseSync.on('start', function(data) {
+    var surfaceVariables = getSurfaceVariables();
+    var width = surfaceVariables.width.value;
+    var height = surfaceVariables.height.value;
+    var left = surfaceVariables.left.value;
+    var top = surfaceVariables.top.value;
+    var right = left + width;
+    var bottom = top + height;
+
+    var mouseX = data.clientX;
+    var mouseY = data.clientY;
+    if (mouseX >= left &&
+        mouseX <= right &&
+        mouseY >= top &&
+        mouseY <= bottom) {
+      dragStartedInsideSurface = true;
+      mousePosition[0] = data.clientX;
+      mousePosition[1] = data.clientY;
+      mousePositionOffset[0] = mousePosition[0] - left;
+      mousePositionOffset[1] = mousePosition[1] - top;
+    } else {
+      dragStartedInsideSurface = false;
+    }
+  });
   mouseSync.on('update', function(data) {
-    mousePosition[0] = data.clientX;
-    mousePosition[1] = data.clientY;
+    if (dragStartedInsideSurface) {
+      mousePosition[0] = data.clientX;
+      mousePosition[1] = data.clientY;
+    }
+  });
+  mouseSync.on('end', function(data) {
+    dragStartedInsideSurface = false;
   });
 
   var cassowarySurface = new CassowarySurface({
@@ -59,8 +99,12 @@ require([
     variables: {
       width: 200,
       height: 200,
-      left: function() { return mousePosition[0] - 100; }, // Called on every tick
-      top: function() { return mousePosition[1] - 100; } // Called on every tick
+      left: function() {
+        return mousePosition[0] - mousePositionOffset[0];
+      },
+      top: function() {
+        return mousePosition[1] - mousePositionOffset[1];
+      }
     },
     expressions: {
       right:  ['left', '+', 'width', '-', 125],
@@ -75,6 +119,10 @@ require([
       ['bottom', '<=', 400, 'required']
     ]
   });
+
+  function getSurfaceVariables() {
+    return cassowarySurface.variables;
+  }
 
   context.add(cassowarySurface);
 

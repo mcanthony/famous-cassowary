@@ -25,9 +25,9 @@ define(function(require, exports, module) {
       constraints: options.constraints || {}
     });
 
-    // Expose the functions as public in case the caller wants to do something
-    // special with them. Internally, these are run on every tick of the Famo.us
-    // renderer.
+    this.variables = this.cassowarySystem.variables;
+    this.expressions = this.cassowarySystem.expressions;
+    this.constraints = this.cassowarySystem.constraints;
     this.functions = this.cassowarySystem.functions;
 
     FamousEngine.on('prerender', this.updateProperties.bind(this));
