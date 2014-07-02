@@ -472,12 +472,6 @@ define(function(require, exports, module) {
             // so, where the best place to do so would be.
             simplexSolver.suggestValue(varObj, newVal);
             simplexSolver.resolve();
-
-            // An expression was assigned as a property in the CassowaryBuilder.
-            if (varObj.parentExpression) {
-              //varObj.parentExpression.setVariable(varObj, newVal);
-              //varObj.parentExpression.constant = newVal;
-            }
           }
         });
       }
