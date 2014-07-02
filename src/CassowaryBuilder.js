@@ -455,7 +455,7 @@ define(function(require, exports, module) {
   // Take an object with Cassowary variable objects, *some of which may
   // have been extended with a 'reactiveFunction'*, and set up those functions
   // to work in tandem with the passed solver.
-  CassowaryBuilder.buildFunctions = function(variableObjects, simplexSolver) {
+  CassowaryBuilder.buildFunctions = function(variableObjects, simplexSolver, context) {
     var functions = [];
 
     Utilities.eachProperty(variableObjects, function(varObj, varName) {
@@ -463,7 +463,7 @@ define(function(require, exports, module) {
 
       if (varFn) {
         functions.push(function() {
-          var newVal = varFn();
+          var newVal = varFn.call(context);
 
           if (simplexSolver) {
             // One oddity is that nowhere in this library do I actually call

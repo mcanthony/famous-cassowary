@@ -23,7 +23,7 @@ define(function(require, exports, module) {
       variables: options.variables || {},
       expressions: options.expressions || {},
       constraints: options.constraints || {}
-    });
+    }, this);
 
     this.variables = this.cassowarySystem.variables;
     this.formatters = options.formatters || {};
@@ -50,6 +50,8 @@ define(function(require, exports, module) {
 
     var functions = this.functions;
     for (var i = 0, len = functions.length; i < len; i++) {
+      // Call a wrapper function that contains an invocation of the function
+      // that the user actually supplied.
       functions[i]();
     }
 
