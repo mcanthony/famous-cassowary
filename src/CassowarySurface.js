@@ -46,6 +46,7 @@ define(function(require, exports, module) {
   // update on the actual surface's equivalently-named properties using a merge.
   CassowarySurface.prototype.updateProperties = function() {
     var properties = this.getProperties();
+    var didAnyPropertiesChange = false;
 
     var functions = this.functions;
     for (var i = 0, len = functions.length; i < len; i++) {
@@ -55,6 +56,12 @@ define(function(require, exports, module) {
     var variables = this.cassowarySystem.variables;
     Utilities.eachProperty(variables, function(variableInstance, variableName) {
       var variableValue = variableInstance.value;
+
+      var previousValue = properties[variableName];
+      if (variableValue !== previousValue) {
+        didAnyPropertiesChange = true;
+      }
+
       var variableFormatter = this.formatters[variableName];
       var formattedVariableValue;
 
@@ -71,7 +78,9 @@ define(function(require, exports, module) {
       properties[variableName] = formattedVariableValue || variableValue;
     }, this);
 
-    this.setProperties(properties);
+    if (didAnyPropertiesChange) {
+      this.setProperties(properties);
+    }
   }
 
   module.exports = CassowarySurface;
