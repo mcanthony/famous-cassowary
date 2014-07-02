@@ -1,10 +1,12 @@
 require([
   'famous/core/Engine',
   'famous/inputs/MouseSync',
+  'famous/inputs/TouchSync',
   'famous-cassowary/CassowarySurface'
 ],function(
   FamousEngine,
   FamousMouseSync,
+  FamousTouchSync,
   CassowarySurface
 ){
 
@@ -50,13 +52,14 @@ require([
   var mouseDragPositionOffset = [100, 100]; // Anchor position within the surface
   var mouseDragStartedInsideSurface = false;
 
-  // Prepare the handler for piped-in mouse drag events.
+  // Prepare the handler for piped-in mouse drag and touch tracking events.
   var mouseSync = new FamousMouseSync();
-  FamousEngine.pipe(mouseSync);
+  var touchSync = new FamousTouchSync();
+  FamousEngine.pipe(mouseSync).pipe(touchSync);
 
   // When the drag begins, make note of the starting position, and whether
   // or not the drag began within the bounds of the surface we're tracking.
-  mouseSync.on('start', function(data) {
+  function dragStartHandler(data) {
     var surfaceVariables = cassowarySurface.variables;
 
     var width = surfaceVariables.width.value;
@@ -84,20 +87,29 @@ require([
     } else {
       mouseDragStartedInsideSurface = false;
     }
-  });
+  }
 
   // If the drag started within the surface, update the drag position.
-  mouseSync.on('update', function(data) {
+  function dragUpdateHandler(data) {
     if (mouseDragStartedInsideSurface) {
       mouseDragPosition[0] = data.clientX;
       mouseDragPosition[1] = data.clientY;
     }
-  });
+  }
 
   // Reset the mouse targeting flag when the drag is finished.
-  mouseSync.on('end', function(data) {
+  function dragEndHandler(data) {
     mouseDragStartedInsideSurface = false;
-  });
+  }
+
+  // Start the listeners and attach the handlers.
+  mouseSync.on('start', dragStartHandler);
+  mouseSync.on('update', dragUpdateHandler);
+  mouseSync.on('end', dragEndHandler);
+
+  touchSync.on('start', dragStartHandler);
+  touchSync.on('update', dragUpdateHandler);
+  touchSync.on('end', dragEndHandler);
 
   // A surface bound by constraints computed by the Cassowary solver.
   var cassowarySurface = new CassowarySurface({
