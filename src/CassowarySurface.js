@@ -57,11 +57,6 @@ define(function(require, exports, module) {
     Utilities.eachProperty(variables, function(variableInstance, variableName) {
       var variableValue = variableInstance.value;
 
-      var previousValue = properties[variableName];
-      if (variableValue !== previousValue) {
-        didAnyPropertiesChange = true;
-      }
-
       var variableFormatter = this.formatters[variableName];
       var formattedVariableValue;
 
@@ -71,11 +66,18 @@ define(function(require, exports, module) {
         if (Utilities.isNumber(variableValue)) {
           // Assume any number needs the 'defaultValueUnit' (px) suffixed.
           formattedVariableValue = variableValue + this.defaultValueUnit;
+        } else {
+          formattedVariableValue = variableValue;
         }
       }
 
+      var previousValue = properties[variableName];
+      if (formattedVariableValue !== previousValue) {
+        didAnyPropertiesChange = true;
+      }
+
       // This always overwrites the previously assigned variable. FIXME?
-      properties[variableName] = formattedVariableValue || variableValue;
+      properties[variableName] = formattedVariableValue;
     }, this);
 
     if (didAnyPropertiesChange) {
