@@ -35,54 +35,71 @@ require([
 
   var context = FamousEngine.createContext();
 
-  // Important note!:
-  //
-  // Famo.us provides a 'Draggable' modifier that you can use to
-  // add draggability to Surfaces. You wouldn't want to implement
-  // a dragging system using anything like the code below. The
-  // following is provided purely to illustrate how to build a
-  // CassowarySurface with this library and the dragging interface
-  // is only meant as a proof of concept.
+  /* Important note!:
+   *
+   * Famo.us provides a 'Draggable' modifier that you can use to
+   * add draggability to Surfaces. You wouldn't want to implement
+   * a dragging system using anything like the code below. The
+   * following is provided purely to illustrate how to build a
+   * CassowarySurface with this library, and the dragging interface
+   * is only meant as a proof of concept.
+  */
 
-  var mousePosition = [100, 100];
-  var mousePositionOffset = [100, 100];
+  // We'll track the mouse position to decide where to place the surface.
+  var mouseDragPosition = [100, 100]; // Drag's actual position
+  var mouseDragPositionOffset = [100, 100]; // Anchor position within the surface
+  var mouseDragStartedInsideSurface = false;
+
+  // Prepare the handler for piped-in mouse drag events.
   var mouseSync = new FamousMouseSync();
   FamousEngine.pipe(mouseSync);
-  var dragStartedInsideSurface = false;
+
+  // When the drag begins, make note of the starting position, and whether
+  // or not the drag began within the bounds of the surface we're tracking.
   mouseSync.on('start', function(data) {
-    var surfaceVariables = getSurfaceVariables();
+    var surfaceVariables = cassowarySurface.variables;
+
     var width = surfaceVariables.width.value;
     var height = surfaceVariables.height.value;
     var left = surfaceVariables.left.value;
     var top = surfaceVariables.top.value;
+
     var right = left + width;
     var bottom = top + height;
 
     var mouseX = data.clientX;
     var mouseY = data.clientY;
+
     if (mouseX >= left &&
         mouseX <= right &&
         mouseY >= top &&
         mouseY <= bottom) {
-      dragStartedInsideSurface = true;
-      mousePosition[0] = data.clientX;
-      mousePosition[1] = data.clientY;
-      mousePositionOffset[0] = mousePosition[0] - left;
-      mousePositionOffset[1] = mousePosition[1] - top;
+
+      mouseDragStartedInsideSurface = true;
+      mouseDragPosition[0] = data.clientX;
+      mouseDragPosition[1] = data.clientY;
+      mouseDragPositionOffset[0] = mouseDragPosition[0] - left;
+      mouseDragPositionOffset[1] = mouseDragPosition[1] - top;
+
     } else {
-      dragStartedInsideSurface = false;
+      mouseDragStartedInsideSurface = false;
     }
-  });
-  mouseSync.on('update', function(data) {
-    if (dragStartedInsideSurface) {
-      mousePosition[0] = data.clientX;
-      mousePosition[1] = data.clientY;
-    }
-  });
-  mouseSync.on('end', function(data) {
-    dragStartedInsideSurface = false;
   });
 
+  // If the drag started within the surface, update the drag position.
+  mouseSync.on('update', function(data) {
+    if (mouseDragStartedInsideSurface) {
+      mouseDragPosition[0] = data.clientX;
+      mouseDragPosition[1] = data.clientY;
+    }
+  });
+
+  // Reset the mouse targeting flag when the drag is finished.
+  mouseSync.on('end', function(data) {
+    mouseDragStartedInsideSurface = false;
+  });
+
+  // A surface bound by constraints computed by the Cassowary solver.
   var cassowarySurface = new CassowarySurface({
     size: [200, 200],
     content:
@@ -96,20 +113,28 @@ require([
       textAlign: 'center',
       padding: '10px 20px'
     },
+    // Variables assign values to the surface's CSS-style properties.
+    // They can be constant, or changing over time if supplied as functions.
+    // They can be referenced by property name among the expressions and constraints.
     variables: {
       width: 200,
       height: 200,
       left: function() {
-        return mousePosition[0] - mousePositionOffset[0];
+        return mouseDragPosition[0] - mouseDragPositionOffset[0];
       },
       top: function() {
-        return mousePosition[1] - mousePositionOffset[1];
+        return mouseDragPosition[1] - mouseDragPositionOffset[1];
       }
     },
+    // Expressions are linear expressions that are also evaluated by the solver.
+    // They can be referenced by name (like variables) among the constraints.
     expressions: {
       right:  ['left', '+', 'width', '-', 125],
       bottom: ['top',  '+', 'height'],
     },
+    // Constraints is a list of constraints that the solver should adhere to
+    // when computing the solution. The final element in each array is the strength.
+    // Constraints can reference named variables or expressions defined above.
     constraints: [
       ['width',  '>=', 200, 'required'],
       ['height', '>=', 200, 'required'],
@@ -119,10 +144,6 @@ require([
       ['bottom', '<=', 400, 'required']
     ]
   });
-
-  function getSurfaceVariables() {
-    return cassowarySurface.variables;
-  }
 
   context.add(cassowarySurface);
 
