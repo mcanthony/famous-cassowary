@@ -107,7 +107,7 @@ require([
       '<p>[ Click & drag me ]</p>' +
       '<p><a href="https://github.com/matthewtoast/famous-cassowary/">Source code on GitHub &#8608;</a></p>',
     properties: {
-      backgroundColor: '#339933',
+      backgroundColor: 'rgba(255,100,100,1.0);',
       color: '#ddddff',
       fontFamily: 'Helvetica, Arial, sans-serif',
       textAlign: 'center',
@@ -124,7 +124,20 @@ require([
       },
       top: function() {
         return mouseDragPosition[1] - mouseDragPositionOffset[1];
+      },
+      backgroundColor: function() {
+        return mouseDragPosition[0] / 2;
       }
+    },
+    // Since CSS-style values come in a variety of formats (px, em, hex colors...),
+    // a formatters API is provided. The computed value of each variable or expression
+    // is passed through the formatter before assigned to the surface's properties.
+    formatters: {
+      width: pxFormatter,
+      height: pxFormatter,
+      left: pxFormatter,
+      top: pxFormatter,
+      backgroundColor: colorFormatter
     },
     // Expressions are linear expressions that are also evaluated by the solver.
     // They can be referenced by name (like variables) among the constraints.
@@ -141,9 +154,18 @@ require([
       ['left',   '>=', 20,  'required'],
       ['top',    '>=', 20,  'required'],
       ['right',  '<=', 400, 'required'],
-      ['bottom', '<=', 400, 'required']
+      ['bottom', '<=', 400, 'required'],
+      ['backgroundColor', '<=', 255, 'required']
     ]
   });
+
+  function pxFormatter(value) {
+    return value + 'px';
+  }
+
+  function colorFormatter(value) {
+    return 'rgba(' + ~~value + ', 100, 100, 1.0)';
+  }
 
   context.add(cassowarySurface);
 
