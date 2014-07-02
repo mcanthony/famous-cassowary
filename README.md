@@ -12,7 +12,7 @@ Documentation to come later. For now, please see the [demos](./demos) folder for
 
 ## Demos
 
-* **[CassowarySurface](http://matthewtoast.github.io/famous-cassowary/demos/cassowary-surface/):** A stunning demonstration in which you move a green square around the screen with your mouse! ([Code](https://github.com/matthewtoast/famous-cassowary/blob/master/demos/cassowary-surface/index.js))
+* **[CassowarySurface](http://matthewtoast.github.io/famous-cassowary/demos/cassowary-surface/):** A stunning demonstration in which you move a colored square around the screen! ([Code](https://github.com/matthewtoast/famous-cassowary/blob/master/demos/cassowary-surface/index.js))
 
 ## Development
 

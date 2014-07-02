@@ -16,16 +16,17 @@ define(function(require, exports, module) {
     // Of course, not all numerical style properties are going to use the same
     // unit, but for simplicity in these "early days" we'll lock the end user into
     // using just one.
-    this.valueUnit = options.valueUnit || 'px';
+    this.defaultValueUnit = options.defaultValueUnit || 'px';
 
     // Initialize an internal Cassowary constraint system for this surface.
     this.cassowarySystem = new CassowarySystem({
       variables: options.variables || {},
       expressions: options.expressions || {},
       constraints: options.constraints || {}
-    });
+    }, this);
 
     this.variables = this.cassowarySystem.variables;
+    this.formatters = options.formatters || {};
     this.expressions = this.cassowarySystem.expressions;
     this.constraints = this.cassowarySystem.constraints;
     this.functions = this.cassowarySystem.functions;
@@ -45,9 +46,12 @@ define(function(require, exports, module) {
   // update on the actual surface's equivalently-named properties using a merge.
   CassowarySurface.prototype.updateProperties = function() {
     var properties = this.getProperties();
+    var didAnyPropertiesChange = false;
 
     var functions = this.functions;
     for (var i = 0, len = functions.length; i < len; i++) {
+      // Call a wrapper function that contains an invocation of the function
+      // that the user actually supplied.
       functions[i]();
     }
 
@@ -55,19 +59,32 @@ define(function(require, exports, module) {
     Utilities.eachProperty(variables, function(variableInstance, variableName) {
       var variableValue = variableInstance.value;
 
-      // Convert numerical values to a property string
-      // E.g., the number 200 would become '200px'.
-      // TODO/fixme to be more flexible!
-      if (Utilities.isNumber(variableValue)) {
-        variableValue = variableValue + this.valueUnit;
+      var variableFormatter = this.formatters[variableName];
+      var formattedVariableValue;
+
+      if (variableFormatter) {
+        formattedVariableValue = variableFormatter(variableValue);
+      } else {
+        if (Utilities.isNumber(variableValue)) {
+          // Assume any number needs the 'defaultValueUnit' (px) suffixed.
+          formattedVariableValue = variableValue + this.defaultValueUnit;
+        } else {
+          formattedVariableValue = variableValue;
+        }
       }
 
-      // Overwrite whatever variable was before.
-      // TODO/fixme. More checks to prevent bad clobberings.
-      properties[variableName] = variableValue;
+      var previousValue = properties[variableName];
+      if (formattedVariableValue !== previousValue) {
+        didAnyPropertiesChange = true;
+      }
+
+      // This always overwrites the previously assigned variable. FIXME?
+      properties[variableName] = formattedVariableValue;
     }, this);
 
-    this.setProperties(properties);
+    if (didAnyPropertiesChange) {
+      this.setProperties(properties);
+    }
   }
 
   module.exports = CassowarySurface;

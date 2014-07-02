@@ -8,7 +8,7 @@ define(function(require, exports, module) {
    *
    * Create a Cassowary solver system for set of Cassowary-related options.
   */
-  function CassowarySystem(options) {
+  function CassowarySystem(options, context) {
     if (!this instanceof CassowarySystem) { return new CassowarySystem(options); }
 
     var solver = new Cassowary.SimplexSolver();
@@ -16,7 +16,7 @@ define(function(require, exports, module) {
     var variables = Builder.buildVariables(options.variables, solver);
     var expressions = Builder.buildExpressions(variables, options.expressions);
     var constraints = Builder.buildConstraints(variables, expressions, options.constraints);
-    var functions = Builder.buildFunctions(variables, solver);
+    var functions = Builder.buildFunctions(variables, solver, context);
 
     this.solver = solver;
     this.variables = variables;

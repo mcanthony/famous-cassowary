@@ -5,12 +5,40 @@ define(function(require, exports, module) {
   /*
    * CassowaryBuilder
    *
-   * Factory base object to create Cassowary-related objects.
+   * Factory base object to create Cassowary-related objects such as
+   * variables, expressions and constraints. The idea is to provide
+   * a static interface that other modules can use to construct their
+   * own internals.
    *
-   * This file does most of the heavy lifting in this project...
-   * * Figuring out how to convert the options object (which we're
-   *   using as a kind of DSL) into an actual system of constraints.
-   * * Building all of the Cassowary objects in the correct order.
+   * This module does most of the heavy lifting in this project. As a
+   * direct result of that, the code is the gnarliest. If you're looking
+   * for a contribution to make, feel free to look for 'TODO' or 'fixme'
+   * comments which I've added on a couple of problems.
+   *
+   * Broadly speaking, this module is responsible for...
+   *
+   *   * Figuring out how to convert the options object properties (which
+   *     we're using as a kind of poor-man's-DSL) into the actual Cassowary
+   *     library objects.
+   *
+   *   * Assembling those Cassowary objects in the correct way such that
+   *     a SimplexSolver can compute over them and come to resolution.
+   *
+   * More specifically, it can do four things:
+   *   1. Convert a 'variables' object into Cassowary variables.
+   *      E.g.: { thing: 123 } ~~> Cassowary.Variable(...)
+   *
+   *   2. Convert an 'expression' construct into a Cassowary expression.
+   *      E.g. ['thing1', '+', 'thing2'] ~~> Cassowary.Expression(...)
+   *
+   *   3. Convert a 'constraint' construct into a Cassowary constraint.
+   *      E.g. ['thing1', '<=', 200] ~~> Cassowary.Inequality(...)
+   *
+   *   4. Create reactive functions from any variable objects that were
+   *      supplied as functions, and ensure that each time those functions
+   *      are run they trigger the solver's 'suggestValue' method, so
+   *      that all the values get recalculated.
+   *
   */
   var CassowaryBuilder = {};
 
@@ -427,7 +455,7 @@ define(function(require, exports, module) {
   // Take an object with Cassowary variable objects, *some of which may
   // have been extended with a 'reactiveFunction'*, and set up those functions
   // to work in tandem with the passed solver.
-  CassowaryBuilder.buildFunctions = function(variableObjects, simplexSolver) {
+  CassowaryBuilder.buildFunctions = function(variableObjects, simplexSolver, context) {
     var functions = [];
 
     Utilities.eachProperty(variableObjects, function(varObj, varName) {
@@ -435,7 +463,7 @@ define(function(require, exports, module) {
 
       if (varFn) {
         functions.push(function() {
-          var newVal = varFn();
+          var newVal = varFn.call(context);
 
           if (simplexSolver) {
             // One oddity is that nowhere in this library do I actually call
@@ -444,12 +472,6 @@ define(function(require, exports, module) {
             // so, where the best place to do so would be.
             simplexSolver.suggestValue(varObj, newVal);
             simplexSolver.resolve();
-
-            // An expression was assigned as a property in the CassowaryBuilder.
-            if (varObj.parentExpression) {
-              //varObj.parentExpression.setVariable(varObj, newVal);
-              //varObj.parentExpression.constant = newVal;
-            }
           }
         });
       }
