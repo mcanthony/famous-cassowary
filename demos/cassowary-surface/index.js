@@ -109,6 +109,7 @@ require([
     properties: {
       backgroundColor: 'rgba(255,100,100,1.0);',
       color: '#ddddff',
+      cursor: 'move',
       fontFamily: 'Helvetica, Arial, sans-serif',
       textAlign: 'center',
       padding: '10px 20px'
