@@ -120,6 +120,7 @@ require([
       '<p><a href="https://github.com/matthewtoast/famous-cassowary/">Source code on GitHub &#8608;</a></p>',
     properties: {
       backgroundColor: 'rgba(255,100,100,1.0);',
+      border: '1px solid black',
       color: '#ddddff',
       cursor: 'move',
       fontFamily: 'Helvetica, Arial, sans-serif',
@@ -162,12 +163,12 @@ require([
     // when computing the solution. The final element in each array is the strength.
     // Constraints can reference named variables or expressions defined above.
     constraints: [
-      ['width',  '>=', 200, 'required'],
-      ['height', '>=', 200, 'required'],
-      ['left',   '>=', 20,  'required'],
-      ['top',    '>=', 20,  'required'],
-      ['right',  '<=', 400, 'required'],
-      ['bottom', '<=', 400, 'required'],
+      ['width',           '>=', 200, 'required'],
+      ['height',          '>=', 200, 'required'],
+      ['left',            '>=', 20,  'required'],
+      ['top',             '>=', 20,  'required'],
+      ['right',           '<=', 400, 'required'],
+      ['bottom',          '<=', 400, 'required'],
       ['backgroundColor', '<=', 255, 'required']
     ]
   });
