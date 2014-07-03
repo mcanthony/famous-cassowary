@@ -88,22 +88,7 @@ define(function(require, exports, module) {
     var builtVariables = {};
 
     Utilities.eachProperty(variables, function(varVal, varName) {
-      if (Utilities.isNumber(varVal)) {
-        builtVariables[varName] = new Cassowary.Variable({ value: varVal, name: varName });
-      } else if (isCassowaryVariable(varVal)) {
-        // The user may want to create their own Cassowary variable instance.
-        varVal.name = varName;
-        builtVariables[varName] = varVal;
-      } else if (Utilities.isNumber(varVal.value)) {
-        // If they sent an object with a value property like { value: 123 }...
-        builtVariables[varName] = new Cassowary.Variable(varVal);
-        builtVariables[varName].name = varName;
-      } else if (Utilities.isFunction(varVal)) {
-        // Execute the function initially to get a starting value:
-        builtVariables[varName] = new Cassowary.Variable({ name: varName, value: varVal() });
-        // Assign a 'reactiveFunction' that can dynamically change the variable's value.
-        builtVariables[varName].reactiveFunction = varVal;
-      }
+      CassowaryBuilder.buildVariable(varVal, varName, builtVariables);
     });
 
     // Assume that all 'variables' are supposed to be edit variables in the system.
@@ -116,6 +101,30 @@ define(function(require, exports, module) {
     return builtVariables;
   };
 
+  CassowaryBuilder.buildVariable = function(variableValue, variableName, out) {
+    if (Utilities.isNumber(variableValue)) {
+      out[variableName] = new Cassowary.Variable({
+        value: variableValue,
+        name: variableName
+      });
+    } else if (isCassowaryVariable(variableValue)) {
+      // The user may want to create their own Cassowary variable instance.
+      varVal.name = variableName;
+      out[variableName] = variableValue;
+    } else if (Utilities.isNumber(variableValue.value)) {
+      // If they sent an object with a value property like { value: 123 }...
+      out[variableName] = new Cassowary.Variable(variableValue);
+      out[variableName].name = variableName;
+    } else if (Utilities.isFunction(variableValue)) {
+      // Execute the function initially to get a starting value:
+      out[variableName] = new Cassowary.Variable({
+        name: variableName,
+        value: variableValue()
+      });
+      // Assign a 'reactiveFunction' that can dynamically change the variable's value.
+      out[variableName].reactiveFunction = variableValue;
+    }
+  };
 
 
   // Take an object whose property names are expression names and

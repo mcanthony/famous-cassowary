@@ -16,6 +16,9 @@ define(function(require, exports, module) {
     var variables = Builder.buildVariables(options.variables, solver);
     var expressions = Builder.buildExpressions(variables, options.expressions);
     var constraints = Builder.buildConstraints(variables, expressions, options.constraints);
+
+    // The functions step has to happen last due to the expectation that
+    // variables, expressions and constraints might contain anonymous functions.
     var functions = Builder.buildFunctions(variables, solver, context);
 
     this.solver = solver;
