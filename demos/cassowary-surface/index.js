@@ -120,6 +120,7 @@ require([
       '<p><a href="https://github.com/matthewtoast/famous-cassowary/">Source code on GitHub &#8608;</a></p>',
     properties: {
       backgroundColor: 'rgba(255,100,100,1.0);',
+      border: '1px solid black',
       color: '#ddddff',
       cursor: 'move',
       fontFamily: 'Helvetica, Arial, sans-serif',
