@@ -1,5 +1,5 @@
 require([
-  'famous-cassowary/Cassowary'
+  'cassowary-system/Cassowary'
 ],function(
   Cassowary
 ){

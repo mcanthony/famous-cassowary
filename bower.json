@@ -23,6 +23,7 @@
     "famous": "~0.2.1",
     "cassowary.js": "git://github.com/slightlyoff/cassowary.js",
     "famous-polyfills": "git://github.com/Famous/polyfills.git#~0.1.1",
-    "requirejs": "~2.1.14"
+    "requirejs": "~2.1.14",
+    "cassowary-system": "git@github.com:matthewtoast/cassowary-system.git"
   }
 }
