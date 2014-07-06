@@ -1,0 +1,15 @@
+{
+  "name": "cassowary-system",
+  "version": "0.0.0",
+  "description": "API for building Cassowary constraint solver systems.",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "cassowary"
+  ],
+  "author": "Matthew Trost",
+  "license": "MIT",
+  "devDependencies": {
+    "bower": "^1.3.5"
+  }
+}
