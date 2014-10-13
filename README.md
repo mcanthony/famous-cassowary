@@ -1,6 +1,10 @@
 # famous-cassowary [obsolete]
 
-**This project is obsolete and no longer maintained!** Hopefully in the future a full, working integration between Famo.us and Cassowary can be developed. This project never got very far along. For posterity, the original README follows.
+**This project is obsolete and no longer maintained!** Hopefully in the future a full, working integration between Famo.us and Cassowary can be developed. This project never got very far along, but there might be a useful idea or two for those who are interested. For posterity, the original README follows.
+
+If you're looking to venture into these waters yourself, you may want to have a look at my [cassowary-system](https://github.com/matthewtoast/cassowary-system) project, a wrapper over the Cassowary.js API. Although it is in de facto stasis for the moment, it may be useful. (That library is a dependency of this one.)
+
+Have fun!
 
 - - - -
 
