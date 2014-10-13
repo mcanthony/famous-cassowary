@@ -1,4 +1,8 @@
-# famous-cassowary
+# famous-cassowary [obsolete]
+
+**This project is obsolete and no longer maintained!** Hopefully in the future a full, working integration between Famo.us and Cassowary can be developed. This project never got very far along. For posterity, the original README follows.
+
+- - - -
 
 Auto-layouts with [Famo.us](http://famo.us), via the [Cassowary constraint solver](https://www.cs.washington.edu/research/constraints/solvers/cassowary-tochi.pdf).
 
