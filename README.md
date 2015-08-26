@@ -1,4 +1,4 @@
-# famous-cassowary [obsolete]
+# famous-cassowary [OBSOLETE]
 
 **This project is obsolete and no longer maintained!** Hopefully in the future a full, working integration between Famo.us and Cassowary can be developed. This project never got very far along, but there might be a useful idea or two for those who are interested. For posterity, the original README follows.
 
